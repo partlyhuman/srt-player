@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>SRT Player</title>
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            background: black;
+            color: white;
+            overflow: hidden;
+            font-size: 4vw;
+            font-family: 'Ubuntu', sans-serif;
+        }
+        input {
+            font-size: inherit;
+        }
+        .hide {
+            display: none;
+        }
+        .empty {
+            opacity: 0 !important;
+        }
+        #picker {
+            text-align: center;
+        }
+        #screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #sub {
+            opacity: 1;
+            transition: opacity 0.25s;
+            padding: 1em 2em;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 1em;
+            max-width: 90vw;
+            min-width: 1em;
+            min-height: 1em;
+            text-shadow: black -0.05em 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+<section id="screen">
+    <section id="picker">
+        <label>Pick SRT file<br>
+            <input type="file" id="file">
+        </label>
+    </section>
+
+    <div id="sub" class="hide empty">
+    </div>
+</section>
+
+<script src="index.js"></script>
+
+</body>
+</html>

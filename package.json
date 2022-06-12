@@ -1,0 +1,14 @@
+{
+  "name": "srt-player",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "parcel index.html",
+    "clean": "rm -rf dist/ .cache/",
+    "prepublish": "rm -rf dist/",
+    "publish": "parcel build --no-source-maps --public-url . index.html"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}

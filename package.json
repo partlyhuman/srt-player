@@ -1,6 +1,6 @@
 {
   "name": "srt-player",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "parcel index.html",
@@ -9,6 +9,9 @@
     "publish": "parcel build --no-source-maps --public-url . index.html"
   },
   "dependencies": {
+    "opensubtitles-api": "^5.1.2"
+  },
+  "devDependencies": {
     "parcel-bundler": "^1.12.5"
   }
 }

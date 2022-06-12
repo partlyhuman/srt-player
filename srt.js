@@ -15,11 +15,12 @@ function createSrtData(string) {
     }
 
     var number = parseInt(lines[0], 10), times = lines[1].split(" --> "), startTime = parseTime(times[0]),
-        endTime = parseTime(times[1]), text = lines.slice(2).join("\n");
+        endTime = parseTime(times[1]), text = lines.slice(2).join("<br>");
+    //.replace(/\r\n|\n/, '<br>');
 
     return { number: number, startTime: startTime, endTime: endTime, text: text };
 
-    // memo[number] = {
+    // memo[number] = {``
     //     number: number, startTime: startTime, endTime: endTime, text: text
     // };
     //

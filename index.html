@@ -50,6 +50,13 @@
             min-height: 1em;
             text-shadow: black -0.05em 0.05em;
         }
+        #slider {
+            position: absolute;
+            bottom: 3vh;
+            width: 94vw;
+            left: 3vw;
+        }
+
     </style>
 </head>
 <body>
@@ -63,6 +70,9 @@
 
     <div id="sub" class="hide empty">
     </div>
+
+    <input type="range" id="slider" class="hide" min="0" max="0" step="500">
+
 </section>
 
 <script src="index.js"></script>

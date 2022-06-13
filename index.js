@@ -24,11 +24,11 @@ let i = -1;
 
 $slider.addEventListener('input', (e) => {
     seeking = true;
-    seek(e.target.value);
+    seek(e.target.value, false);
 });
 
 $slider.addEventListener('change', (e) => {
-    seek(e.target.value);
+    seek(e.target.value, true);
     seeking = false;
 });
 
@@ -37,11 +37,11 @@ $pause.addEventListener('click', onPlayPause);
 $play.addEventListener('click', onPlayPause);
 
 $back.addEventListener('click', () => {
-   seek(currentPlayTime - STEP);
+   seek(currentPlayTime - STEP, true);
 });
 
 $fwd.addEventListener('click', () => {
-    seek(currentPlayTime + STEP);
+    seek(currentPlayTime + STEP, true);
 })
 
 $file.addEventListener('change', () => {
@@ -81,7 +81,7 @@ function onPlayPause() {
     }
 }
 
-function seek(playTime) {
+function seek(playTime, clearIfEmpty) {
     if (typeof playTime === 'string') {
         playTime = parseInt(playTime, 10);
     }
@@ -92,19 +92,19 @@ function seek(playTime) {
     let sub = subs[found];
     currentPlayTime = playTime;
     i = found;
-    if (sub.startTime > playTime) {
-        sub = null;
-        $sub.classList.add('empty');
-    } else {
+    if (!clearIfEmpty || (playTime >= sub.startTime && playTime <= sub.endTime)) {
         $sub.innerHTML = subs[found].text;
         $sub.classList.remove('empty');
+    } else {
+        sub = null;
+        $sub.classList.add('empty');
     }
     updateTimeDisplay();
 
 }
 
 function updatePlay() {
-    if (!subs || subs.length <= 0) {
+    if (!subs || subs.length <= 0 || i < 0) {
         return;
     }
     if (!playing || seeking) {
@@ -117,6 +117,7 @@ function updatePlay() {
     // console.log(dt, currentPlayTime);
     $slider.value = currentPlayTime;
 
+    const thisSub = subs[i];
     const nextSub = subs[i + 1];
 
     if (currentPlayTime >= nextSub.startTime) {
@@ -124,7 +125,7 @@ function updatePlay() {
 
         $sub.innerHTML = nextSub.text;
         $sub.classList.remove('empty');
-    } else if (currentPlayTime >= lastRealTime) {
+    } else if (currentPlayTime >= thisSub.endTime) {
         // subDiv.innerText = "";
         $sub.classList.add('empty');
     }

@@ -1,6 +1,11 @@
 import { fromString } from './srt';
 import { formatTimestamp } from './format-duration';
 
+let clickEvent = 'click';
+if (window.hasOwnProperty('TouchEvent')) {
+    clickEvent = 'touchstart';
+}
+
 const $ = document.querySelector.bind(document);
 const $slider = $('#slider');
 const $file = $('#file');
@@ -12,7 +17,7 @@ const $time = $('#time');
 const $back = $('#back');
 const $fwd = $('#fwd');
 
-const STEP = 250;
+const STEP = 1000;
 const PLAY_UPDATE_MS = 100;
 let playing = false;
 let seeking = false;
@@ -32,15 +37,15 @@ $slider.addEventListener('change', (e) => {
     seeking = false;
 });
 
-$pause.addEventListener('click', onPlayPause);
+$pause.addEventListener(clickEvent, onPlayPause);
 
-$play.addEventListener('click', onPlayPause);
+$play.addEventListener(clickEvent, onPlayPause);
 
-$back.addEventListener('click', () => {
+$back.addEventListener(clickEvent, () => {
     seek(currentPlayTime - STEP, true);
 });
 
-$fwd.addEventListener('click', () => {
+$fwd.addEventListener(clickEvent, () => {
     seek(currentPlayTime + STEP, true);
 })
 

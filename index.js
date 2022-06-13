@@ -37,7 +37,7 @@ $pause.addEventListener('click', onPlayPause);
 $play.addEventListener('click', onPlayPause);
 
 $back.addEventListener('click', () => {
-   seek(currentPlayTime - STEP, true);
+    seek(currentPlayTime - STEP, true);
 });
 
 $fwd.addEventListener('click', () => {
@@ -55,6 +55,7 @@ $file.addEventListener('change', () => {
 });
 
 function parse(alltext) {
+    playing = false;
     subs = fromString(alltext);
     maxPlayTime = subs[subs.length - 1].endTime;
     // sliderInput.setAttribute('max', maxPlayTime);
@@ -62,7 +63,7 @@ function parse(alltext) {
     $sub.classList.remove('hide');
     lastRealTime = getRealTime();
     setInterval(updatePlay, PLAY_UPDATE_MS);
-    playing = true;
+    onPlayPause();
 }
 
 function getRealTime() {
@@ -104,7 +105,7 @@ function seek(playTime, clearIfEmpty) {
 }
 
 function updatePlay() {
-    if (!subs || subs.length <= 0 || i < 0) {
+    if (!subs || subs.length <= 0) {
         return;
     }
     if (!playing || seeking) {
@@ -117,7 +118,10 @@ function updatePlay() {
     // console.log(dt, currentPlayTime);
     $slider.value = currentPlayTime;
 
-    const thisSub = subs[i];
+    let thisSub;
+    if (i >= 0) {
+        thisSub = subs[i];
+    }
     const nextSub = subs[i + 1];
 
     if (currentPlayTime >= nextSub.startTime) {
@@ -125,7 +129,7 @@ function updatePlay() {
 
         $sub.innerHTML = nextSub.text;
         $sub.classList.remove('empty');
-    } else if (currentPlayTime >= thisSub.endTime) {
+    } else if (thisSub && currentPlayTime >= thisSub.endTime) {
         // subDiv.innerText = "";
         $sub.classList.add('empty');
     }

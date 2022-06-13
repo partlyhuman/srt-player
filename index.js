@@ -1,49 +1,65 @@
 import { fromString } from './srt';
+import { formatTimestamp } from './format-duration';
 
 const $ = document.querySelector.bind(document);
-const sliderInput = $('#slider');
-const fileInput = $('#file');
-const subDiv = $('#sub');
+const $slider = $('#slider');
+const $file = $('#file');
+const $sub = $('#sub');
+const $controls = $('.controls');
+const $play = $('#play');
+const $pause = $('#pause');
+const $time = $('#time');
+const $back = $('#back');
+const $fwd = $('#fwd');
 
+const STEP = 250;
+const PLAY_UPDATE_MS = 100;
 let playing = false;
 let seeking = false;
-const PLAY_UPDATE_MS = 100;
 let lastRealTime = 0;
 let currentPlayTime = 0;
 let maxPlayTime = 0;
 let subs = [];
 let i = -1;
-let thisSub;
 
-sliderInput.addEventListener('input', (e) => {
+$slider.addEventListener('input', (e) => {
     seeking = true;
     seek(e.target.value);
 });
 
-sliderInput.addEventListener('change', (e) => {
+$slider.addEventListener('change', (e) => {
     seek(e.target.value);
     seeking = false;
 });
 
+$pause.addEventListener('click', onPlayPause);
 
-fileInput.addEventListener('change', () => {
+$play.addEventListener('click', onPlayPause);
+
+$back.addEventListener('click', () => {
+   seek(currentPlayTime - STEP);
+});
+
+$fwd.addEventListener('click', () => {
+    seek(currentPlayTime + STEP);
+})
+
+$file.addEventListener('change', () => {
     const reader = new FileReader();
     reader.onload = function (e) {
         parse(e.target.result);
+        $('#picker').classList.add('hide');
+        $controls.classList.remove('hide');
     };
-    reader.readAsText(fileInput.files[0]);
+    reader.readAsText($file.files[0]);
 });
 
 function parse(alltext) {
     subs = fromString(alltext);
-    console.log('After sorting and parsing, ', subs);
-    $('#picker').classList.add('hide');
-    sliderInput.classList.remove('hide');
     maxPlayTime = subs[subs.length - 1].endTime;
     // sliderInput.setAttribute('max', maxPlayTime);
-    sliderInput.max = maxPlayTime;
-    console.log('last time = ', maxPlayTime);
-    subDiv.classList.remove('hide');
+    $slider.max = maxPlayTime;
+    $sub.classList.remove('hide');
     lastRealTime = getRealTime();
     setInterval(updatePlay, PLAY_UPDATE_MS);
     playing = true;
@@ -53,17 +69,38 @@ function getRealTime() {
     return new Date().getTime();
 }
 
+function onPlayPause() {
+    lastRealTime = getRealTime();
+    playing = !playing;
+    if (playing) {
+        $pause.classList.remove('hide');
+        $play.classList.add('hide');
+    } else {
+        $play.classList.remove('hide');
+        $pause.classList.add('hide');
+    }
+}
 
 function seek(playTime) {
-    playTime = parseInt(playTime, 10);
-    const found = subs.findIndex(sub => sub.endTime >= playTime) - 1;
-    if (found < 0) {
-        return;
+    if (typeof playTime === 'string') {
+        playTime = parseInt(playTime, 10);
     }
+
+    // console.log('seek from ', currentPlayTime, 'to', playTime)
+    playTime = Math.max(0, Math.min(maxPlayTime, playTime));
+    const found = Math.max(0, subs.findIndex(sub => sub.endTime >= playTime) - 1);
+    let sub = subs[found];
     currentPlayTime = playTime;
     i = found;
-    subDiv.innerHTML = subs[found].text;
-    subDiv.classList.remove('empty');
+    if (sub.startTime > playTime) {
+        sub = null;
+        $sub.classList.add('empty');
+    } else {
+        $sub.innerHTML = subs[found].text;
+        $sub.classList.remove('empty');
+    }
+    updateTimeDisplay();
+
 }
 
 function updatePlay() {
@@ -77,19 +114,23 @@ function updatePlay() {
     const dt = now - lastRealTime;
     lastRealTime = now;
     currentPlayTime += dt;
-    console.log(dt, currentPlayTime);
-    sliderInput.value = currentPlayTime;
+    // console.log(dt, currentPlayTime);
+    $slider.value = currentPlayTime;
 
     const nextSub = subs[i + 1];
 
     if (currentPlayTime >= nextSub.startTime) {
-        thisSub = nextSub;
         i++;
 
-        subDiv.innerHTML = thisSub.text;
-        subDiv.classList.remove('empty');
+        $sub.innerHTML = nextSub.text;
+        $sub.classList.remove('empty');
     } else if (currentPlayTime >= lastRealTime) {
         // subDiv.innerText = "";
-        subDiv.classList.add('empty');
+        $sub.classList.add('empty');
     }
+    updateTimeDisplay();
+}
+
+function updateTimeDisplay() {
+    $time.innerText = formatTimestamp(currentPlayTime);
 }

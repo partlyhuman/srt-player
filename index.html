@@ -4,6 +4,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <meta charset="UTF-8">
     <title>SRT Player</title>
     <style>
@@ -16,18 +18,23 @@
             font-size: 4vw;
             font-family: 'Ubuntu', sans-serif;
         }
+
         input {
             font-size: inherit;
         }
+
         .hide {
-            display: none;
+            display: none !important;
         }
+
         .empty {
             opacity: 0 !important;
         }
+
         #picker {
             text-align: center;
         }
+
         #screen {
             position: fixed;
             top: 0;
@@ -39,22 +46,47 @@
             align-items: center;
             justify-content: center;
         }
+
         #sub {
             opacity: 1;
             transition: opacity 0.25s;
             padding: 1em 2em;
-            background-color: rgba(255,255,255,0.2);
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 1em;
             max-width: 90vw;
             min-width: 1em;
             min-height: 1em;
             text-shadow: black -0.05em 0.05em;
         }
-        #slider {
+
+        .controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
             position: absolute;
             bottom: 3vh;
             width: 94vw;
             left: 3vw;
+        }
+
+        .controls > span {
+            margin-right: 10px;
+        }
+
+        .controls svg {
+            width: 5vh;
+            height: 5vw;
+        }
+
+        #slider {
+            flex: 1;
+        }
+
+        #time {
+            font-size: 50%;
+            width: 6em;
+            text-align: right;
+            overflow: visible;
         }
 
     </style>
@@ -63,16 +95,19 @@
 
 <section id="screen">
     <section id="picker">
-        <label>Pick SRT file<br>
-            <input type="file" id="file">
-        </label>
+        <label>Pick SRT file<br> <input type="file" id="file"> </label>
     </section>
 
-    <div id="sub" class="hide empty">
+    <div id="sub" class="hide empty"></div>
+
+    <div class="controls hide">
+        <span id="pause" class="icon"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#ffffff"><g><rect fill="none" height="24" width="24"/></g><g><g><path d="M9,16h2V8H9V16z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8 s3.59-8,8-8s8,3.59,8,8S16.41,20,12,20z M13,16h2V8h-2V16z"/></g></g></svg></span>
+        <span id="play" class="icon hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span>
+        <span id="back" class="icon"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18 9.86v4.28L14.97 12 18 9.86m-9 0v4.28L5.97 12 9 9.86M20 6l-8.5 6 8.5 6V6zm-9 0l-8.5 6 8.5 6V6z"/></svg></span>
+        <span id="fwd" class="icon"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF"><g><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/></g><g><g/><path d="M15,9.86L18.03,12L15,14.14V9.86 M6,9.86L9.03,12L6,14.14V9.86 M13,6v12l8.5-6L13,6L13,6z M4,6v12l8.5-6L4,6L4,6z"/></g></svg></span>
+        <input type="range" id="slider"  min="0" max="0" step="500">
+        <span id="time"></span>
     </div>
-
-    <input type="range" id="slider" class="hide" min="0" max="0" step="500">
-
 </section>
 
 <script src="index.js"></script>

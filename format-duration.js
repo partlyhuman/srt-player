@@ -42,8 +42,8 @@ export function formatTimestamp (ms, options, fps = 24) {
   const sign = ms <= -1000 ? '-' : ''
   const t = parseMs(unsignedMs)
   const seconds = addZero(t.seconds)
-  const frames = addZero(Math.trunc(t.milliseconds / 1000 * fps));
-  if (t.days) return sign + t.days + ':' + addZero(t.hours) + ':' + addZero(t.minutes) + ':' + seconds + '.' + frames
-  if (t.hours) return sign + (leading ? addZero(t.hours) : t.hours) + ':' + addZero(t.minutes) + ':' + seconds + '.' + frames
-  return sign + (leading ? addZero(t.minutes) : t.minutes) + ':' + seconds + '.' + frames
+  // const frames = addZero(Math.trunc(t.milliseconds / 1000 * fps));
+  if (t.days) return sign + t.days + ':' + addZero(t.hours) + ':' + addZero(t.minutes) + ':' + seconds// + '.' + frames
+  if (t.hours) return sign + (leading ? addZero(t.hours) : t.hours) + ':' + addZero(t.minutes) + ':' + seconds// + '.' + frames
+  return sign + (leading ? addZero(t.minutes) : t.minutes) + ':' + seconds// + '.' + frames
 }

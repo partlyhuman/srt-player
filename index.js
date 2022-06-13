@@ -1,9 +1,12 @@
 import { fromString } from './srt';
-import { formatTimestamp } from './format-duration';
+import formatDuration from 'format-duration';
+import OS from 'opensubtitles-api';
 
+const OpenSubtitles = new OS({ useragent: 'TemporaryUserAgent', ssl: false });
 const $ = document.querySelector.bind(document);
-const $slider = $('#slider');
+const $osform = $('#opensubtitles');
 const $file = $('#file');
+const $slider = $('#slider');
 const $sub = $('#sub');
 const $controls = $('.controls');
 const $play = $('#play');
@@ -22,6 +25,23 @@ let maxPlayTime = 0;
 let subs = [];
 let i = -1;
 
+$osform.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const query = {
+        extensions: ['srt'],
+        limit: 'best',
+        gzip: false,
+        sublanguageid: formData.get('sublanguageid').trim(),
+        imdbid: formData.get('imdbid').trim(),
+        query: formData.get('query').trim(),
+    };
+    OpenSubtitles.search(query).then(response => {
+        console.dir(response);
+    });
+});
+
 $slider.addEventListener('input', (e) => {
     seeking = true;
     seek(e.target.value, false);
@@ -37,7 +57,7 @@ $pause.addEventListener('click', onPlayPause);
 $play.addEventListener('click', onPlayPause);
 
 $back.addEventListener('click', () => {
-   seek(currentPlayTime - STEP, true);
+    seek(currentPlayTime - STEP, true);
 });
 
 $fwd.addEventListener('click', () => {
@@ -133,5 +153,5 @@ function updatePlay() {
 }
 
 function updateTimeDisplay() {
-    $time.innerText = formatTimestamp(currentPlayTime);
+    $time.innerText = formatDuration(currentPlayTime);
 }

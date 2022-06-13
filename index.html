@@ -32,7 +32,17 @@
         }
 
         #picker {
-            text-align: center;
+            /*text-align: center;*/
+        }
+
+        #picker label {
+            display: block;
+            display: flex;
+            flex-direction: row;
+        }
+        #picker label input {
+            margin-left: 1em;
+            flex: 1;
         }
 
         #screen {
@@ -84,7 +94,7 @@
 
         #time {
             font-size: 50%;
-            width: 6em;
+            width: 4em;
             text-align: right;
             overflow: visible;
         }
@@ -95,7 +105,16 @@
 
 <section id="screen">
     <section id="picker">
-        <label>Pick SRT file<br> <input type="file" id="file"> </label>
+        <form id="opensubtitles" action="#">
+            Search OpenSubtitles.org
+            <label>Language code <input name="sublanguageid" type="text" value="en"></label>
+            <label>IMDB ID <input name="imdbid" type="text"></label>
+            <label>Text Search <input name="query" type="text"></label>
+            <input type="submit" value="Search">
+        </form>
+        <form>
+            <label>Local<br> <input type="file" id="file"> </label>
+        </form>
     </section>
 
     <div id="sub" class="hide empty"></div>

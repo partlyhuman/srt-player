@@ -9,6 +9,7 @@
     "publish": "parcel build --no-source-maps --public-url . index.html"
   },
   "dependencies": {
+    "format-duration": "^2.0.0",
     "opensubtitles-api": "^5.1.2"
   },
   "devDependencies": {

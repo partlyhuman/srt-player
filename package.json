@@ -6,12 +6,12 @@
     "dev": "parcel index.html",
     "clean": "rm -rf dist/ .cache/",
     "prepublish": "rm -rf dist/",
-    "publish": "parcel build --no-source-maps --public-url . index.html"
+    "publish": "parcel build --no-source-maps --public-url . index.html && surge dist srtplayer.surge.sh"
   },
   "dependencies": {
-    "opensubtitles-api": "^5.1.2"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.5"
+    "parcel-bundler": "^1.12.5",
+    "surge": "*"
   }
 }

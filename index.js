@@ -1,12 +1,8 @@
-import { fromString } from './srt';
-import { formatTimestamp } from './format-duration';
-
-let clickEvent = 'click';
-if (window.hasOwnProperty('TouchEvent')) {
-    clickEvent = 'touchstart';
-}
+import {fromString} from './srt';
+import {formatTimestamp} from './format-duration';
 
 const $ = document.querySelector.bind(document);
+const $picker = $('#picker');
 const $slider = $('#slider');
 const $file = $('#file');
 const $sub = $('#sub');
@@ -16,9 +12,11 @@ const $pause = $('#pause');
 const $time = $('#time');
 const $back = $('#back');
 const $fwd = $('#fwd');
+const $close = $('#close');
 
 const STEP = 1000;
 const PLAY_UPDATE_MS = 100;
+let updateIntervalId = null;
 let playing = false;
 let seeking = false;
 let lastRealTime = 0;
@@ -37,37 +35,62 @@ $slider.addEventListener('change', (e) => {
     seeking = false;
 });
 
-$pause.addEventListener(clickEvent, onPlayPause);
+$pause.addEventListener('click', onPlayPause);
 
-$play.addEventListener(clickEvent, onPlayPause);
+$play.addEventListener('click', onPlayPause);
 
-$back.addEventListener(clickEvent, () => {
+$back.addEventListener('click', () => {
     seek(currentPlayTime - STEP, true);
 });
 
-$fwd.addEventListener(clickEvent, () => {
+$fwd.addEventListener('click', () => {
     seek(currentPlayTime + STEP, true);
 })
 
 $file.addEventListener('change', () => {
     const reader = new FileReader();
     reader.onload = function (e) {
+        init(true);
         parse(e.target.result);
-        $('#picker').classList.add('hide');
-        $controls.classList.remove('hide');
     };
     reader.readAsText($file.files[0]);
 });
 
-function parse(alltext) {
+$close.addEventListener('click', () => {
+    $file.value = null;
+    init(false);
+});
+
+function init(isMain) {
+    clearInterval(updateIntervalId);
+    updateIntervalId = null;
     playing = false;
+    seeking = false;
+    lastRealTime = 0;
+    currentPlayTime = 0;
+    maxPlayTime = 0;
+    subs = [];
+    i = -1;
+    $sub.innerHTML = '';
+    $sub.classList.add('empty');
+
+    if (isMain) {
+        $picker.classList.add('hide');
+        $controls.classList.remove('hide');
+    } else {
+        $picker.classList.remove('hide');
+        $controls.classList.add('hide');
+    }
+}
+
+function parse(alltext) {
     subs = fromString(alltext);
     maxPlayTime = subs[subs.length - 1].endTime;
     // sliderInput.setAttribute('max', maxPlayTime);
     $slider.max = maxPlayTime;
     $sub.classList.remove('hide');
     lastRealTime = getRealTime();
-    setInterval(updatePlay, PLAY_UPDATE_MS);
+    updateIntervalId = setInterval(updatePlay, PLAY_UPDATE_MS);
     onPlayPause();
 }
 
